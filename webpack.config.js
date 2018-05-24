@@ -6,6 +6,7 @@ const ExtractTextPlugin = require("extract-text-webpack-plugin")
 const CopyWebpackPlugin = require("copy-webpack-plugin")
 const WriteFileWebpackPlugin = require("write-file-webpack-plugin")
 const WebpackNotifierPlugin = require("webpack-notifier")
+const HoneybadgerSourceMapPlugin = require('@honeybadger-io/webpack')
 
 process.noDeprecation = true
 
@@ -20,6 +21,17 @@ const devEntrypoints = [
   "webpack/hot/only-dev-server",
 ]
 const supplementalEntrypoints = inDev ? devEntrypoints : []
+
+const PRODUCTION_ASSETS_URL = 'https://remoteretro.org'
+const productionOnlyPlugins = [
+  new HoneybadgerSourceMapPlugin({
+    apiKey: process.env.HONEYBADGER_API_KEY,
+    assetsUrl: PRODUCTION_ASSETS_URL,
+    revision: process.env.SOURCE_VERSION,
+  }),
+]
+
+const supplementalPlugins = process.env.SOURCE_VERSION ? productionOnlyPlugins : []
 
 module.exports = {
   cache: true,
@@ -93,5 +105,6 @@ module.exports = {
       ignore: "**/.DS_Store",
     }]),
     new WriteFileWebpackPlugin([{ from: "./web/static/assets" }]),
-  ]
+    ...supplementalPlugins,
+  ],
 }
