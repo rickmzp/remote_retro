@@ -32,6 +32,13 @@ const productionOnlyPlugins = [
 ]
 
 const supplementalPlugins = process.env.SOURCE_VERSION ? productionOnlyPlugins : []
+console.log("\n==========================================")
+console.log("process.env.SOURCE_VERSION", process.env.SOURCE_VERSION);
+console.log("supplementalPlugins", supplementalPlugins);
+console.log("HONEYBADGER_API_KEY", HONEYBADGER_API_KEY);
+console.log("==========================================\n")
+
+
 
 module.exports = {
   cache: true,
